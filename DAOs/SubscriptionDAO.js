@@ -4,6 +4,7 @@ var subscriptionDao = {
     findAll: findAll,
     create: create,
     findById: findById,
+    findByMail: findByMail,
     deleteById: deleteById,
     updateSubscription: updateSubscription
 }
@@ -15,6 +16,9 @@ function findAll() {
 function findById(id) {
     return Subscription.findByPk(id);
 }
+function findByMail(val) {
+    return Subscription.findOne({ where: { email: val } });
+}
 
 function deleteById(id) {
     return Subscription.destroy({ where: { id: id } });
@@ -22,14 +26,17 @@ function deleteById(id) {
 
 function create(subscription) {
     var newSubscription = new Subscription(subscription);
+
     return newSubscription.save();
 }
+
+
 
 function updateSubscription(subscription, id) {
     var updateSubscription = {
         fullname: subscription.fullname,
         email: subscription.email,
-        date:  subscription.date,
+        date: subscription.date,
 
     };
     return Subscription.update(updateSubscription, { where: { id: id } });

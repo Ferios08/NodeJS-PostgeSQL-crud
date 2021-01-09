@@ -3,13 +3,37 @@ var subscriptionController = {
     addSubscription: addSubscription,
     findSubscriptions: findSubscriptions,
     findSubscriptionById: findSubscriptionById,
+    findSubscriptionByEmail: findSubscriptionByEmail,
     updateSubscription: updateSubscription,
     deleteById: deleteById
 }
 
 function addSubscription(req, res) {
     let subscription = req.body;
-    subscriptionDao.create(subscription).
+    subscriptionDao.findByMail(req.body.email).
+        then((data) => {
+            if (data)
+
+
+                res.json({ "exist": "true" });
+            else {
+                subscriptionDao.create(subscription).
+                    then((data) => {
+                        res.send(data);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
+
+
+function findSubscriptionById(req, res) {
+    subscriptionDao.findById(req.params.id).
         then((data) => {
             res.send(data);
         })
@@ -18,10 +42,11 @@ function addSubscription(req, res) {
         });
 }
 
-function findSubscriptionById(req, res) {
-    subscriptionDao.findById(req.params.id).
+function findSubscriptionByEmail(req, res) {
+    subscriptionDao.findByMail(req.body.email).
         then((data) => {
-            res.send(data);
+            if (data) res.send(true);
+            else res.send(false);
         })
         .catch((error) => {
             console.log(error);
